@@ -1,5 +1,5 @@
 const mysql = require('mysql2');
-const containPassword = require('../db/password.js');
+const containPassword = require('../localhost/password.js');
 
 const code = containPassword();
 // const code = '';
