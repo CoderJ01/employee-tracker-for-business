@@ -3,7 +3,7 @@ INSERT INTO department
 VALUES
     ('15', 'Engineering')
 
-INSERT INTO position
+INSERT INTO role
     (id, title, salary)
 VALUES
     ('20', 'Software Engineer', '80000')
