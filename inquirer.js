@@ -1,9 +1,11 @@
 const inquirer = require('inquirer');
-const express = require('express');
-const apiRoutes = require('./routes/apiRoutes');
-const employeeRoutes = require('./routes/apiRoutes/employeeRoutes');
+// const express = require('express');
+// const apiRoutes = require('./routes/apiRoutes');
+// const employeeRoutes = require('./routes/apiRoutes/employeeRoutes');
 
-var optionsList = () => {
+var promptUser = {};
+
+promptUser.optionsList = () => {
 
     inquirer.prompt([
         {
@@ -31,19 +33,19 @@ var optionsList = () => {
             }
 
             if (choice === 'Add Department') {
-                addDepartment();
+                promptUser.addDepartment();
             }
 
             if (choice === 'Add Role') {
-                addRole();
+                promptUser.addRole();
             }
 
             if (choice === 'Add Employee') {
-                addEmployee();
+                promptUser.addEmployee();
             }
 
             if (choice === 'Update Employee Role') {
-                updateRole();
+                promptUser.updateRole();
             }
 
             if (choice === 'Quit') {
@@ -53,9 +55,9 @@ var optionsList = () => {
     );
 }
 
-optionsList();
+promptUser.optionsList();
 
-var addDepartment = () => {
+promptUser.addDepartment = () => {
 
     inquirer.prompt([
         {
@@ -67,7 +69,7 @@ var addDepartment = () => {
 
 }
 
-var addRole = () => {
+promptUser.addRole = () => {
 
     inquirer.prompt([
         {
@@ -90,7 +92,7 @@ var addRole = () => {
 
 }
 
-var addEmployee = () => {
+promptUser.addEmployee = () => {
 
     inquirer.prompt([
         {
@@ -119,7 +121,7 @@ var addEmployee = () => {
 
 }
 
-var updateRole = () => {
+promptUser.updateRole = () => {
 
     inquirer.prompt([
         {
@@ -137,3 +139,5 @@ var updateRole = () => {
     ]);
 
 }
+
+module.exports = promptUser;
