@@ -1,17 +1,17 @@
 INSERT INTO department
     (name)
 VALUES
-    ('Engineering')
+    ('Engineering');
 
 INSERT INTO role
     (title, salary)
 VALUES
-    ('Software Engineer', '80000')
+    ('Software Engineer', '90000');
 
 INSERT INTO employee
-    (first_name, last_name, role_id, manager_id)
+    (first_name, last_name)
 VALUES
-    ('Leonardo', 'Da Vinci', '2500', '10')
+    ('Leonardo', 'Da Vinci');
 
 
 
