@@ -1,15 +1,15 @@
 INSERT INTO department
-    (id, name)
+    (name)
 VALUES
-    ('15', 'Engineering')
+    ('Engineering')
 
 INSERT INTO role
-    (id, title, salary)
+    (title, salary)
 VALUES
-    ('20', 'Software Engineer', '80000')
+    ('Software Engineer', '80000')
 
 INSERT INTO employee
-    (id, first_name, last_name, role_id, manager_id)
+    (first_name, last_name, role_id, manager_id)
 VALUES
     ('Leonardo', 'Da Vinci', '2500', '10')
 

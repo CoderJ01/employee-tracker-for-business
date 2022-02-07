@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS role
 DROP TABLE IF EXISTS department
 
 CREATE TABLE department (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30)
 );
 
@@ -28,8 +28,4 @@ CREATE TABLE employee (
         FOREIGN KEY (role_id)
         REFERENCES role(id)
         ON DELETE CASCADE
-);
-
-
-
-
+);i
