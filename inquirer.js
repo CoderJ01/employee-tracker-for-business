@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const express = require('express');
 const apiRoutes = require('./routes/apiRoutes');
+const employeeRoutes = require('./routes/apiRoutes/employeeRoutes');
 
 var optionsList = () => {
 
