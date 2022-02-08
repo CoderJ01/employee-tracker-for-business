@@ -1,7 +1,6 @@
 const inquirer = require('inquirer');
-// const express = require('express');
-// const apiRoutes = require('./routes/apiRoutes');
-// const employeeRoutes = require('./routes/apiRoutes/employeeRoutes');
+const express = require('express');
+const {department, role, employee} = require('./routes/apiRoutes');
 
 var promptUser = {};
 
@@ -21,15 +20,15 @@ promptUser.optionsList = () => {
             var choice = answer.tableChoice;
 
             if (choice === 'View All Departments') {
-
+                department.view();
             }
 
             if (choice === 'View All Roles') {
-                
+                role.view();
             }
 
             if (choice === 'View All Employees') {
-                
+                employee.view();
             }
 
             if (choice === 'Add Department') {
@@ -65,7 +64,13 @@ promptUser.addDepartment = () => {
             name: 'department',
             message: 'What is the name of the department?'
         }
-    ]);
+    ]).then(
+        answer => {
+            if (answer.department) {
+                department.create();
+            }
+        }
+    );
 
 }
 
@@ -84,11 +89,17 @@ promptUser.addRole = () => {
         },
         {
             type: 'list',
-            name: 'roleSalary',
+            name: 'roleDepartment',
             message: 'What department does the role belong to?',
             choices: ['[insert array here somehow]']
         }
-    ]);
+    ]).then(
+        answer => {
+            if (answer.roleName && answer.roleSalary && answer.roleDepartment) {
+                role.create();
+            }
+        }
+    );
 
 }
 
@@ -97,7 +108,7 @@ promptUser.addEmployee = () => {
     inquirer.prompt([
         {
             type: 'input',
-            name: 'fisrt',
+            name: 'first',
             message: 'What is the first name of the employee?'
         },
         {
@@ -117,7 +128,13 @@ promptUser.addEmployee = () => {
             message: 'Who is the manager of the employee?',
             choices: ['None', '[insert array here somehow]']
         }
-    ]);
+    ]).then(
+        answer => {
+            if (answer.first && answer.last && answer.roleEmploy && answer.managerEmploy) {
+                employee.create();
+            }
+        }
+    );
 
 }
 
@@ -136,7 +153,13 @@ promptUser.updateRole = () => {
             message: 'Which role would you like to assign the employee?',
             choices: ['[array]']
         }
-    ]);
+    ]).then(
+        answer => {
+            if (answer.updateEmployee && answer.updateRole) {
+                employee.update();
+            }
+        }
+    );
 
 }
 
