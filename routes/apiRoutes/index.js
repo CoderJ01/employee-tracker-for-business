@@ -1,8 +1,8 @@
-// const express = require('express');
-// const router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-// router.use(require('./departmentRoutes'));
-// router.use(require('./roleRoutes'));
-// router.use(require('./employeeRoutes'));
+const department = require('./departmentRoutes');
+const role = require('./roleRoutes');
+const employee = require('./employeeRoutes');
 
-// module.exports = router;
+module.exports = { department, role, employee };
