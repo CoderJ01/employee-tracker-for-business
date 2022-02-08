@@ -8,7 +8,7 @@ var department = {};
 department.view = function () {
     // view all departments
     router.get('/departments', (req, res) => {
-        const sql = `SELECT * FROM DEPARTMENTS`;
+        const sql = `SELECT * FROM department`;
 
         db.query(sql, (err, rows) => {
             if (err) {
@@ -25,7 +25,7 @@ department.view = function () {
 
 department.create = function () {
     // create a department
-    router.post('department', ({ body }, res) => {
+    router.post('/department', ({ body }, res) => {
         const errors = inputCheck(
             body,
             'name',
