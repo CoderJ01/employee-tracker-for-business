@@ -56,4 +56,36 @@ employee.create = function () {
     });
 }
 
+employee.update = function () {
+    // update an employee's role
+    router.put('/employee/:id', (req, res) => {
+        const errors = inputCheck(req.body, 'role_id');
+        if (errors) {
+            res.status(400).json({ error: errors });
+            return;
+        }
+        const sql = `UPDATE employee SET role_id = ?
+                     WHERE id = ?`;
+        const params = [req.body.party_id, req.params.id];
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                res.status(400).json({ error: err.message });
+            }
+            else if (!result.affectedRows) {
+                res.json({
+                    message: 'Employee not found'
+                });
+            }
+            else {
+                res.json({
+                    message: 'success',
+                    data: req.body,
+                    changes: result.affectRows
+                });
+            }
+        });
+    });
+}
+
 module.exports = employee;
