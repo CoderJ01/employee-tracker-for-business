@@ -52,6 +52,18 @@ var optionsList = () => {
 
 optionsList();
 
+var viewAllDapartments = () => {
+
+}
+
+var viewAllRoles = () => {
+
+}
+
+var viewAllEmployees = () => {
+
+}
+
 var addDepartment = () => {
 
     inquirer.prompt([
@@ -63,7 +75,7 @@ var addDepartment = () => {
     ]).then(
         answer => {
             if (answer.department) {
-                department.create();
+           
             }
         }
     );
@@ -92,7 +104,7 @@ var addRole = () => {
     ]).then(
         answer => {
             if (answer.roleName && answer.roleSalary && answer.roleDepartment) {
-                role.create();
+       
             }
         }
     );
@@ -127,7 +139,7 @@ var addEmployee = () => {
     ]).then(
         answer => {
             if (answer.first && answer.last && answer.roleEmploy && answer.managerEmploy) {
-                employee.create();
+
             }
         }
     );
@@ -152,7 +164,7 @@ var updateRole = () => {
     ]).then(
         answer => {
             if (answer.updateEmployee && answer.updateRole) {
-                employee.update();
+             
             }
         }
     );
