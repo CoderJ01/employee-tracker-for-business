@@ -41,20 +41,31 @@ prompt.departView = function () {
 }
 
 prompt.departDisplay = function (rows) {
-    
-    function Person(firstName, lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-      
-    var john = {};
-    john[0] = new Person("John", "Smith");
-    john[1] = new Person("Jane", "Doe");
-    john[2] = new Person("Emily", "Jones");
 
-    
-    console.table(john);
-    
+    var department = [
+        {
+            id: rows[0].id,
+            name: rows[0].name
+        },
+        {
+            id: rows[1].id,
+            name: rows[1].name
+        },
+        {
+            id: rows[2].id,
+            name: rows[2].name
+        },
+        {
+            id: rows[3].id,
+            name: rows[3].name
+        },
+        {
+            id: rows[4].id,
+            name: rows[4].name
+        },
+    ];
+
+    console.table(department);
 }
 
 module.exports = prompt;
