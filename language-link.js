@@ -17,6 +17,9 @@ prompt.main = function (choice) {
             if (choice === 'View All Departments') {
                 prompt.departView();
             }
+            if (choice === 'View All Roles') {
+                prompt.roleView();
+            }
         });
     });
 
@@ -33,11 +36,9 @@ prompt.departView = function () {
                 return reject(err);
             }
             resolve(rows);
-            console.log(rows);
             prompt.departDisplay(rows);
         });
     });
-
 }
 
 prompt.departDisplay = function (rows) {
@@ -66,6 +67,55 @@ prompt.departDisplay = function (rows) {
     ];
 
     console.table(department);
+}
+
+prompt.roleView = function () {
+
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'SELECT * FROM role';
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            prompt.roleDisplay(rows);
+        });
+    });
+}
+
+prompt.roleDisplay = function (rows) {
+
+    var role = [
+        {
+            title: rows[0].title,
+            salary: rows[0].salary,
+            department_id: rows[0].department_id
+        },
+        {
+            title: rows[1].title,
+            salary: rows[1].salary,
+            department_id: rows[1].department_id
+        },
+        {
+            title: rows[2].title,
+            salary: rows[2].salary,
+            department_id: rows[2].department_id
+        },
+        {
+            title: rows[3].title,
+            salary: rows[3].salary,
+            department_id: rows[3].department_id
+        },
+        {
+            title: rows[4].title,
+            salary: rows[4].salary,
+            department_id: rows[4].department_id
+        },
+    ];
+
+    console.table(role);
 }
 
 module.exports = prompt;
