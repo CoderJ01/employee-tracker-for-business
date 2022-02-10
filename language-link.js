@@ -20,6 +20,9 @@ prompt.main = function (choice) {
             if (choice === 'View All Roles') {
                 prompt.roleView();
             }
+            if (choice === 'View All Employees') {
+                prompt.employeeView();
+            }
         });
     });
 
@@ -118,4 +121,57 @@ prompt.roleDisplay = function (rows) {
     console.table(role);
 }
 
+prompt.employeeView = function () {
+
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'SELECT * FROM employee';
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            prompt.displayEmploy(rows);
+        });
+    });
+}
+
+prompt.displayEmploy = function (rows) {
+
+    var employee = [
+        {
+            first_name: rows[0].first_name,
+            last_name: rows[0].last_name,
+            role_id: rows[0].role_id,
+            manager_id: rows[0].manager_id
+        },
+        {
+            first_name: rows[1].first_name,
+            last_name: rows[1].last_name,
+            role_id: rows[1].role_id,
+            manager_id: rows[1].manager_id
+        },
+        {
+            first_name: rows[2].first_name,
+            last_name: rows[2].last_name,
+            role_id: rows[2].role_id,
+            manager_id: rows[2].manager_id
+        },
+        {
+            first_name: rows[3].first_name,
+            last_name: rows[3].last_name,
+            role_id: rows[3].role_id,
+            manager_id: rows[3].manager_id
+        },
+        {
+            first_name: rows[4].first_name,
+            last_name: rows[4].last_name,
+            role_id: rows[4].role_id,
+            manager_id: rows[4].manager_id
+        },
+    ];
+
+    console.table(employee);
+}
 module.exports = prompt;
