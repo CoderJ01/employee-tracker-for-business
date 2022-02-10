@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+const prompt = require('./language-link');
 
 var optionsList = () => {
 
@@ -16,7 +17,7 @@ var optionsList = () => {
             var choice = answer.tableChoice;
 
             if (choice === 'View All Departments') {
-              
+                prompt.departView();
             }
 
             if (choice === 'View All Roles') {
