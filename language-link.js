@@ -174,4 +174,3 @@ prompt.displayEmploy = function (rows) {
 
     console.table(employee);
 }
-module.exports = prompt;
