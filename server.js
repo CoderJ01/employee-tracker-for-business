@@ -1,4 +1,4 @@
-const inquirer = require('inquirer');
+const inquirer = require('inquirer')
 const prompt = require('./language-link');
 
 var optionsList = () => {
@@ -17,31 +17,31 @@ var optionsList = () => {
             var choice = answer.tableChoice;
 
             if (choice === 'View All Departments') {
-                prompt.departView();
+                prompt.main(choice);
             }
 
             if (choice === 'View All Roles') {
-             
+                prompt.main(choice);
             }
 
             if (choice === 'View All Employees') {
-               
+                prompt.main(choice);
             }
 
             if (choice === 'Add Department') {
-        
+                prompt.main(choice);
             }
 
             if (choice === 'Add Role') {
-           
+                prompt.main(choice);
             }
 
             if (choice === 'Add Employee') {
-           
+                prompt.main(choice);
             }
 
             if (choice === 'Update Employee Role') {
-           
+                prompt.main(choice);
             }
 
             if (choice === 'Quit') {
