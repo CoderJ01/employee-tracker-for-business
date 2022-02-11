@@ -230,6 +230,8 @@ var optionsList = (department, role, employee) => {
         employee = [];
     }
 
+    // console.log(department);
+
     inquirer.prompt([
         {
             type: 'list',
@@ -274,20 +276,25 @@ var optionsList = (department, role, employee) => {
     )
 }
 
+// display all departments in the mySQL database
 var displayDepartments = (department, role, employee) => {
     console.table(department);
     confirmContinue(department, role, employee);
 }
 
+// display all roles in the mySQL database
 var displayRoles = (department, role, employee) => {
     console.table(role);
     confirmContinue(department, role, employee);
 }
 
+// display all employees in the mySQL database
 var displayEmployees = (department, role, employee) => {
     console.table(employee);
     confirmContinue(department, role, employee);
 }
+
+// add a department to the mySQL database
 
 var addDepartment = (department, role, employee) => {
 
@@ -299,13 +306,69 @@ var addDepartment = (department, role, employee) => {
         }
     ]).then(
         answer => {
-            if (answer.department) {
-           
+            var departName = answer.department;
+            if (departName) {
+                mySQLaddDepart(department, role, employee, departName);
             }
         }
     );
 
 }
+
+var mySQLaddDepart = (department, role, employee, departName) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'USE company;';
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            addDepartSecCommand(department, role, employee, departName);
+        });
+    });    
+}
+
+var addDepartSecCommand = (department, role, employee, departName) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'INSERT INTO department (name)' + `VALUES ('${departName}');`;
+        // var query_str = `DELETE FROM department WHERE name='undefined';`
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            addDepartmentThird(department, role, employee, departName, rows);
+        });
+    });
+}
+
+var addDepartmentThird = (department, role, employee, departName, rows) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = `SELECT * FROM department;`;
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            let depart = {
+                id: rows[(department.length)].id,
+                name: rows[(department.length)].name
+            }
+            console.log(department);
+            console.log(depart);
+            department.push(depart);
+            confirmContinue(department, role, employee);
+        });
+    });
+}
+
+// add a role to the mySQL database
 
 var addRole = (department, role, employee) => {
 
@@ -335,6 +398,8 @@ var addRole = (department, role, employee) => {
     );
 
 }
+
+// add an employee to the mySQL database
 
 var addEmployee = (department, role, employee) => {
 
@@ -370,6 +435,8 @@ var addEmployee = (department, role, employee) => {
     );
 
 }
+
+// update a role in the mySQL database
 
 var updateRole = (department, role, employee) => {
 
