@@ -371,6 +371,11 @@ var addDepartmentThird = (department, role, employee, departName, rows) => {
 // add a role to the mySQL database
 
 var addRole = (department, role, employee) => {
+    
+    var departArray = [department[0].name, department[1].name, department[2].name, 
+                       department[3].name, department[4].name]
+
+    console.log(departArray);
 
     inquirer.prompt([
         {
@@ -387,17 +392,74 @@ var addRole = (department, role, employee) => {
             type: 'list',
             name: 'roleDepartment',
             message: 'What department does the role belong to?',
-            choices: ['[insert array here somehow]']
+            choices: departArray
         }
     ]).then(
         answer => {
-            if (answer.roleName && answer.roleSalary && answer.roleDepartment) {
-       
+            var roleName = answer.roleName;
+            var salary = answer.roleSalary;
+            var roleD = answer.roleDepartment;
+            if (roleName && salary && roleD) {
+                //mySQLaddRole(department, role, employee, roleName, salary, roleD);
             }
         }
     );
 
 }
+
+var mySQLaddRole = (department, role, employee, roleName, salary, roleD) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'USE company;';
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            addRoleSecCommand(department, role, employee, roleName, salary, roleD);
+        });
+    });    
+}
+
+var addRoleSecCommand = (department, role, employee, roleName, salary, roleD) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'INSERT INTO role (title, salary)' + `VALUES ('${roleName}', '${salary}');`;
+        // var query_str = `DELETE FROM department WHERE name='undefined';`
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            addRoleThird(department, role, employee, roleName, salary, roleD);
+        });
+    });
+}
+
+var addRoleThird = (department, role, employee, roleName, salary, roleD) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = `SELECT * FROM role;`;
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            let depart = {
+                id: rows[(department.length)].id,
+                name: rows[(department.length)].name
+            }
+            console.log(department);
+            console.log(depart);
+            department.push(depart);
+            confirmContinue(department, role, employee);
+        });
+    });
+}
+
 
 // add an employee to the mySQL database
 
