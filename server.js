@@ -230,8 +230,6 @@ var optionsList = (department, role, employee) => {
         employee = [];
     }
 
-    // console.log(department);
-
     inquirer.prompt([
         {
             type: 'list',
@@ -360,8 +358,6 @@ var addDepartmentThird = (department, role, employee, departName, rows) => {
                 id: rows[(department.length)].id,
                 name: rows[(department.length)].name
             }
-            console.log(department);
-            console.log(depart);
             department.push(depart);
             confirmContinue(department, role, employee);
         });
@@ -373,9 +369,7 @@ var addDepartmentThird = (department, role, employee, departName, rows) => {
 var addRole = (department, role, employee) => {
     
     var departArray = [department[0].name, department[1].name, department[2].name, 
-                       department[3].name, department[4].name]
-
-    console.log(departArray);
+                       department[3].name, department[4].name];
 
     inquirer.prompt([
         {
@@ -400,7 +394,7 @@ var addRole = (department, role, employee) => {
             var salary = answer.roleSalary;
             var roleD = answer.roleDepartment;
             if (roleName && salary && roleD) {
-                //mySQLaddRole(department, role, employee, roleName, salary, roleD);
+                mySQLaddRole(department, role, employee, departArray, roleName, salary, roleD);
             }
         }
     );
@@ -452,8 +446,6 @@ var addRoleThird = (department, role, employee, roleName, salary, roleD) => {
                 id: rows[(department.length)].id,
                 name: rows[(department.length)].name
             }
-            console.log(department);
-            console.log(depart);
             department.push(depart);
             confirmContinue(department, role, employee);
         });
