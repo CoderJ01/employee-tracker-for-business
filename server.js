@@ -189,7 +189,10 @@ var displayAllThree = (rows, rowsR, rowsE) => {
     ];
 
     var departArray = [rows[0].name, rows[1].name, rows[2].name, rows[3].name, rows[4].name]
-    optionsList(department, role, employee, departArray);
+    var roleArray = [rowsR[0].title, rowsR[1].title, rowsR[2].title, rowsR[3].title, rowsR[4].title];
+    var employeeArray = ['None', rowsE[0].last_name, rowsE[1].last_name, rowsE[2].last_name, rowsE[3].last_name,
+                         rowsE[4].last_name];
+    optionsList(department, role, employee, departArray, roleArray, employeeArray);
 }
 
 
@@ -203,7 +206,7 @@ var displayAllThree = (rows, rowsR, rowsE) => {
 
 
 
-var confirmContinue = (department, role, employee, departArray) => {
+var confirmContinue = (department, role, employee, departArray, roleArray, employeeArray) => {
     inquirer.prompt([
         {
             type: 'confirm',
@@ -213,13 +216,13 @@ var confirmContinue = (department, role, employee, departArray) => {
     ]).then(
         answer => {
             if (answer.continue === true) {
-                optionsList(department, role, employee, departArray);
+                optionsList(department, role, employee, departArray, roleArray, employeeArray);
             }
         }
     );
 }
 
-var optionsList = (department, role, employee, departArray) => {
+var optionsList = (department, role, employee, departArray, roleArray, employeeArray) => {
 
     if (!department) {
        department = [];
@@ -232,6 +235,12 @@ var optionsList = (department, role, employee, departArray) => {
     }
     if (!departArray) {
         departArray = [];
+    }
+    if (!roleArray) {
+        roleArray = [];
+    }
+    if (!employeeArray) {
+        employeeArray = [];
     }
 
     inquirer.prompt([
@@ -264,11 +273,11 @@ var optionsList = (department, role, employee, departArray) => {
             }
 
             if (choice === 'Add Role') {
-                addRole(department, role, employee, departArray);
+                addRole(department, role, employee, departArray, roleArray);
             }
 
             if (choice === 'Add Employee') {
-                addEmployee(department, role, employee)
+                addEmployee(department, role, employee, roleArray, employeeArray)
             }
 
             if (choice === 'Update Employee Role') {
@@ -372,7 +381,7 @@ var addDepartmentThird = (department, role, employee, departArray, departName, r
 
 // add a role to the mySQL database
 
-var addRole = (department, role, employee, departArray) => {
+var addRole = (department, role, employee, departArray, roleArray) => {
 
     inquirer.prompt([
         {
@@ -404,14 +413,14 @@ var addRole = (department, role, employee, departArray) => {
                 }
             }
             if (roleName && salary && roleD) {
-                mySQLaddRole(department, role, employee, departArray, roleName, salary, roleD, depart_id);
+                mySQLaddRole(department, role, employee, departArray, roleArray, roleName, salary, roleD, depart_id);
             }
         }
     );
 
 }
 
-var mySQLaddRole = (department, role, employee, departArray, roleName, salary, roleD, depart_id) => {
+var mySQLaddRole = (department, role, employee, departArray, roleArray, roleName, salary, roleD, depart_id) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = 'USE company;';
@@ -421,12 +430,12 @@ var mySQLaddRole = (department, role, employee, departArray, roleName, salary, r
                 return reject(err);
             }
             resolve(rows);
-            addRoleSecCommand(department, role, employee, departArray, roleName, salary, roleD, depart_id);
+            addRoleSecCommand(department, role, employee, departArray, roleArray, roleName, salary, roleD, depart_id);
         });
     });    
 }
 
-var addRoleSecCommand = (department, role, employee, departArray, roleName, salary, roleD, depart_id) => {
+var addRoleSecCommand = (department, role, employee, departArray, roleArray, roleName, salary, roleD, depart_id) => {
     return new Promise(function(resolve, reject) {
         var query_str = 'INSERT INTO role (title, salary)' + `VALUES ('${roleName}', '${salary}');`;
 
@@ -435,12 +444,12 @@ var addRoleSecCommand = (department, role, employee, departArray, roleName, sala
                 return reject(err);
             }
             resolve(rows);
-            addRoleThird(department, role, employee, departArray, roleName, salary, roleD, depart_id);
+            addRoleThird(department, role, employee, departArray, roleArray, roleName, salary, roleD, depart_id);
         });
     });
 }
 
-var addRoleThird = (department, role, employee, departArray, roleName, salary, roleD, depart_id) => {
+var addRoleThird = (department, role, employee, departArray, roleArray, roleName, salary, roleD, depart_id) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = `SELECT * FROM role;`;
@@ -455,9 +464,10 @@ var addRoleThird = (department, role, employee, departArray, roleName, salary, r
                 salary: salary,
                 department_id: depart_id
             }
-            console.log(position);
-            // role.push(position);
-            confirmContinue(department, role, employee, departArray);
+            var positionRole = roleName;
+            role.push(position);
+            roleArray.push(positionRole);
+            confirmContinue(department, role, employee, departArray, roleArray);
         });
     });
 }
@@ -465,7 +475,7 @@ var addRoleThird = (department, role, employee, departArray, roleName, salary, r
 
 // add an employee to the mySQL database
 
-var addEmployee = (department, role, employee) => {
+var addEmployee = (department, role, employee, roleArray, employeeArray) => {
 
     inquirer.prompt([
         {
@@ -482,13 +492,13 @@ var addEmployee = (department, role, employee) => {
             type: 'list',
             name: 'roleEmploy',
             message: 'What is the role of the employee?',
-            choices: ['[insert array here somehow]']
+            choices: roleArray
         },
         {
             type: 'list',
             name: 'managerEmploy',
             message: 'Who is the manager of the employee?',
-            choices: ['None', '[insert array here somehow]']
+            choices: employeeArray
         }
     ]).then(
         answer => {
