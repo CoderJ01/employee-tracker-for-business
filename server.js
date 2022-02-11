@@ -3,7 +3,206 @@ const inquirer = require('inquirer')
 const mysql = require('mysql2');
 var connection = require('./localhost/connection');
 
-var confirmContinue = () => {
+// 
+
+// // seed 
+
+//
+
+var tableSeeds = () => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'USE company';
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            seedsDepart();
+        });
+    });    
+}
+
+tableSeeds();
+
+var seedsDepart = () => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'SELECT * FROM department';
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            seedsDisplayD(rows);
+        });
+    });
+}
+
+var seedsDisplayD = (rows) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'USE company';
+
+        connection.query(query_str, function (err, rowsR, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rowsR);
+            seedsRole(rows);
+        });
+    });    
+} 
+
+var seedsRole = (rows) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'SELECT * FROM role';
+
+        connection.query(query_str, function (err, rowsR, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rowsR);
+            seedsDisplayR(rows, rowsR);
+        });
+    });
+}
+
+var seedsDisplayR = (rows, rowsR) => {
+
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'USE company';
+
+        connection.query(query_str, function (err, rowsD, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rowsD);
+            employRole(rows, rowsR);
+        });
+    });    
+}
+
+var employRole = (rows, rowsR) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'SELECT * FROM employee';
+
+        connection.query(query_str, function (err, rowsE, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rowsE);
+            displayAllThree(rows, rowsR, rowsE);
+        });
+    });
+}
+
+var displayAllThree = (rows, rowsR, rowsE) => {
+
+    var department = [
+        {
+            id: rows[0].id,
+            name: rows[0].name
+        },
+        {
+            id: rows[1].id,
+            name: rows[1].name
+        },
+        {
+            id: rows[2].id,
+            name: rows[2].name
+        },
+        {
+            id: rows[3].id,
+            name: rows[3].name
+        },
+        {
+            id: rows[4].id,
+            name: rows[4].name
+        },
+    ];
+
+    var role = [
+        {
+            title: rowsR[0].title,
+            salary: rowsR[0].salary,
+            department_id: rowsR[0].department_id
+        },
+        {
+            title: rowsR[1].title,
+            salary: rowsR[1].salary,
+            department_id: rowsR[1].department_id
+        },
+        {
+            title: rowsR[2].title,
+            salary: rowsR[2].salary,
+            department_id: rowsR[2].department_id
+        },
+        {
+            title: rowsR[3].title,
+            salary: rowsR[3].salary,
+            department_id: rowsR[3].department_id
+        },
+        {
+            title: rowsR[4].title,
+            salary: rowsR[4].salary,
+            department_id: rowsR[4].department_id
+        },
+    ];
+
+    var employee = [
+        {
+            first_name: rowsE[0].first_name,
+            last_name: rowsE[0].last_name,
+            role_id: rowsE[0].role_id,
+            manager_id: rowsE[0].manager_id
+        },
+        {
+            first_name: rowsE[1].first_name,
+            last_name: rowsE[1].last_name,
+            role_id: rowsE[1].role_id,
+            manager_id: rowsE[1].manager_id
+        },
+        {
+            first_name: rowsE[2].first_name,
+            last_name: rowsE[2].last_name,
+            role_id: rowsE[2].role_id,
+            manager_id: rowsE[2].manager_id
+        },
+        {
+            first_name: rowsE[3].first_name,
+            last_name: rowsE[3].last_name,
+            role_id: rowsE[3].role_id,
+            manager_id: rowsE[3].manager_id
+        },
+        {
+            first_name: rowsE[4].first_name,
+            last_name: rowsE[4].last_name,
+            role_id: rowsE[4].role_id,
+            manager_id: rowsE[4].manager_id
+        },
+    ];
+
+    optionsList(department, role, employee);
+}
+
+
+
+
+//
+
+// // main
+
+//
+
+
+
+var confirmContinue = (department, role, employee) => {
     inquirer.prompt([
         {
             type: 'confirm',
@@ -13,13 +212,23 @@ var confirmContinue = () => {
     ]).then(
         answer => {
             if (answer.continue === true) {
-                optionsList();
+                optionsList(department, role, employee);
             }
         }
     );
 }
 
-var optionsList = () => {
+var optionsList = (department, role, employee) => {
+
+    if (!department) {
+       department = [];
+    }
+    if (!role) {
+        role = [];
+    }
+    if (!employee) {
+        employee = [];
+    }
 
     inquirer.prompt([
         {
@@ -35,39 +244,52 @@ var optionsList = () => {
             var choice = answer.tableChoice;
 
             if (choice === 'View All Departments') {
-                prompt.main(choice);
+                displayDepartments(department, role, employee);
             }
 
             if (choice === 'View All Roles') {
-                prompt.main(choice);
+                displayRoles(department, role, employee)
             }
 
             if (choice === 'View All Employees') {
-                prompt.main(choice);
+                displayEmployees(department, role, employee);
             }
 
             if (choice === 'Add Department') {
-                prompt.main(choice);
+                addDepartment(department, role, employee);
             }
 
             if (choice === 'Add Role') {
-                prompt.main(choice);
+                addRole(department, role, employee);
             }
 
             if (choice === 'Add Employee') {
-                prompt.main(choice);
+                addEmployee(department, role, employee)
             }
 
             if (choice === 'Update Employee Role') {
-                prompt.main(choice);
+                updateRole(department, role, employee);
             }
         }
     )
 }
 
-optionsList();
+var displayDepartments = (department, role, employee) => {
+    console.table(department);
+    confirmContinue(department, role, employee);
+}
 
-var addDepartment = () => {
+var displayRoles = (department, role, employee) => {
+    console.table(role);
+    confirmContinue(department, role, employee);
+}
+
+var displayEmployees = (department, role, employee) => {
+    console.table(employee);
+    confirmContinue(department, role, employee);
+}
+
+var addDepartment = (department, role, employee) => {
 
     inquirer.prompt([
         {
@@ -85,7 +307,7 @@ var addDepartment = () => {
 
 }
 
-var addRole = () => {
+var addRole = (department, role, employee) => {
 
     inquirer.prompt([
         {
@@ -114,7 +336,7 @@ var addRole = () => {
 
 }
 
-var addEmployee = () => {
+var addEmployee = (department, role, employee) => {
 
     inquirer.prompt([
         {
@@ -149,7 +371,7 @@ var addEmployee = () => {
 
 }
 
-var updateRole = () => {
+var updateRole = (department, role, employee) => {
 
     inquirer.prompt([
         {
@@ -172,189 +394,4 @@ var updateRole = () => {
         }
     );
 }
-
-//
-
-// // links
-
-// 
-
-var prompt = {};
-
-prompt.main = function (choice) {
-
-    return new Promise(function(resolve, reject) {
-
-        var query_str = 'USE company';
-
-        connection.query(query_str, function (err, rows, fields) {
-            if (err) {
-                return reject(err);
-            }
-            resolve(rows);
-            if (choice === 'View All Departments') {
-                prompt.departView();
-            }
-            if (choice === 'View All Roles') {
-                prompt.roleView();
-            }
-            if (choice === 'View All Employees') {
-                prompt.employeeView();
-            }
-        });
-    });
-
-}
-
-prompt.departView = function () {
-
-    return new Promise(function(resolve, reject) {
-
-        var query_str = 'SELECT * FROM department';
-
-        connection.query(query_str, function (err, rows, fields) {
-            if (err) {
-                return reject(err);
-            }
-            resolve(rows);
-            prompt.departDisplay(rows);
-        });
-    });
-}
-
-prompt.departDisplay = function (rows) {
-
-    var department = [
-        {
-            id: rows[0].id,
-            name: rows[0].name
-        },
-        {
-            id: rows[1].id,
-            name: rows[1].name
-        },
-        {
-            id: rows[2].id,
-            name: rows[2].name
-        },
-        {
-            id: rows[3].id,
-            name: rows[3].name
-        },
-        {
-            id: rows[4].id,
-            name: rows[4].name
-        },
-    ];
-
-    console.table(department);
-    confirmContinue();
-}
-
-prompt.roleView = function () {
-
-    return new Promise(function(resolve, reject) {
-
-        var query_str = 'SELECT * FROM role';
-
-        connection.query(query_str, function (err, rows, fields) {
-            if (err) {
-                return reject(err);
-            }
-            resolve(rows);
-            prompt.roleDisplay(rows);
-        });
-    });
-}
-
-prompt.roleDisplay = function (rows) {
-
-    var role = [
-        {
-            title: rows[0].title,
-            salary: rows[0].salary,
-            department_id: rows[0].department_id
-        },
-        {
-            title: rows[1].title,
-            salary: rows[1].salary,
-            department_id: rows[1].department_id
-        },
-        {
-            title: rows[2].title,
-            salary: rows[2].salary,
-            department_id: rows[2].department_id
-        },
-        {
-            title: rows[3].title,
-            salary: rows[3].salary,
-            department_id: rows[3].department_id
-        },
-        {
-            title: rows[4].title,
-            salary: rows[4].salary,
-            department_id: rows[4].department_id
-        },
-    ];
-
-    console.table(role);
-    confirmContinue();
-}
-
-prompt.employeeView = function () {
-
-    return new Promise(function(resolve, reject) {
-
-        var query_str = 'SELECT * FROM employee';
-
-        connection.query(query_str, function (err, rows, fields) {
-            if (err) {
-                return reject(err);
-            }
-            resolve(rows);
-            prompt.displayEmploy(rows);
-        });
-    });
-}
-
-prompt.displayEmploy = function (rows) {
-
-    var employee = [
-        {
-            first_name: rows[0].first_name,
-            last_name: rows[0].last_name,
-            role_id: rows[0].role_id,
-            manager_id: rows[0].manager_id
-        },
-        {
-            first_name: rows[1].first_name,
-            last_name: rows[1].last_name,
-            role_id: rows[1].role_id,
-            manager_id: rows[1].manager_id
-        },
-        {
-            first_name: rows[2].first_name,
-            last_name: rows[2].last_name,
-            role_id: rows[2].role_id,
-            manager_id: rows[2].manager_id
-        },
-        {
-            first_name: rows[3].first_name,
-            last_name: rows[3].last_name,
-            role_id: rows[3].role_id,
-            manager_id: rows[3].manager_id
-        },
-        {
-            first_name: rows[4].first_name,
-            last_name: rows[4].last_name,
-            role_id: rows[4].role_id,
-            manager_id: rows[4].manager_id
-        },
-    ];
-
-    console.table(employee);
-    confirmContinue();
-}
-
-
 
