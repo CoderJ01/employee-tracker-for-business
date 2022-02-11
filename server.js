@@ -188,7 +188,8 @@ var displayAllThree = (rows, rowsR, rowsE) => {
         },
     ];
 
-    optionsList(department, role, employee);
+    var departArray = [rows[0].name, rows[1].name, rows[2].name, rows[3].name, rows[4].name]
+    optionsList(department, role, employee, departArray);
 }
 
 
@@ -202,7 +203,7 @@ var displayAllThree = (rows, rowsR, rowsE) => {
 
 
 
-var confirmContinue = (department, role, employee) => {
+var confirmContinue = (department, role, employee, departArray) => {
     inquirer.prompt([
         {
             type: 'confirm',
@@ -212,13 +213,13 @@ var confirmContinue = (department, role, employee) => {
     ]).then(
         answer => {
             if (answer.continue === true) {
-                optionsList(department, role, employee);
+                optionsList(department, role, employee, departArray);
             }
         }
     );
 }
 
-var optionsList = (department, role, employee) => {
+var optionsList = (department, role, employee, departArray) => {
 
     if (!department) {
        department = [];
@@ -228,6 +229,9 @@ var optionsList = (department, role, employee) => {
     }
     if (!employee) {
         employee = [];
+    }
+    if (!departArray) {
+        departArray = [];
     }
 
     inquirer.prompt([
@@ -256,11 +260,11 @@ var optionsList = (department, role, employee) => {
             }
 
             if (choice === 'Add Department') {
-                addDepartment(department, role, employee);
+                addDepartment(department, role, employee, departArray);
             }
 
             if (choice === 'Add Role') {
-                addRole(department, role, employee);
+                addRole(department, role, employee, departArray);
             }
 
             if (choice === 'Add Employee') {
@@ -294,7 +298,7 @@ var displayEmployees = (department, role, employee) => {
 
 // add a department to the mySQL database
 
-var addDepartment = (department, role, employee) => {
+var addDepartment = (department, role, employee, departArray) => {
 
     inquirer.prompt([
         {
@@ -306,14 +310,14 @@ var addDepartment = (department, role, employee) => {
         answer => {
             var departName = answer.department;
             if (departName) {
-                mySQLaddDepart(department, role, employee, departName);
+                mySQLaddDepart(department, role, employee, departArray, departName);
             }
         }
     );
 
 }
 
-var mySQLaddDepart = (department, role, employee, departName) => {
+var mySQLaddDepart = (department, role, employee, departArray, departName) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = 'USE company;';
@@ -323,12 +327,12 @@ var mySQLaddDepart = (department, role, employee, departName) => {
                 return reject(err);
             }
             resolve(rows);
-            addDepartSecCommand(department, role, employee, departName);
+            addDepartSecCommand(department, role, employee, departArray, departName);
         });
     });    
 }
 
-var addDepartSecCommand = (department, role, employee, departName) => {
+var addDepartSecCommand = (department, role, employee, departArray, departName) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = 'INSERT INTO department (name)' + `VALUES ('${departName}');`;
@@ -339,12 +343,12 @@ var addDepartSecCommand = (department, role, employee, departName) => {
                 return reject(err);
             }
             resolve(rows);
-            addDepartmentThird(department, role, employee, departName, rows);
+            addDepartmentThird(department, role, employee, departArray, departName, rows);
         });
     });
 }
 
-var addDepartmentThird = (department, role, employee, departName, rows) => {
+var addDepartmentThird = (department, role, employee, departArray, departName, rows) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = `SELECT * FROM department;`;
@@ -354,22 +358,21 @@ var addDepartmentThird = (department, role, employee, departName, rows) => {
                 return reject(err);
             }
             resolve(rows);
-            let depart = {
+            var depart = {
                 id: rows[(department.length)].id,
                 name: rows[(department.length)].name
             }
+            var departA = rows[(department.length)].name;
             department.push(depart);
-            confirmContinue(department, role, employee);
+            departArray.push(departA);
+            confirmContinue(department, role, employee, departArray);
         });
     });
 }
 
 // add a role to the mySQL database
 
-var addRole = (department, role, employee) => {
-    
-    var departArray = [department[0].name, department[1].name, department[2].name, 
-                       department[3].name, department[4].name];
+var addRole = (department, role, employee, departArray) => {
 
     inquirer.prompt([
         {
@@ -393,15 +396,22 @@ var addRole = (department, role, employee) => {
             var roleName = answer.roleName;
             var salary = answer.roleSalary;
             var roleD = answer.roleDepartment;
+            var depart_id = [];
+            for (var i = 0; i < departArray.length; i++) {
+                depart_id[i] = (i + 1);
+                if (roleD === departArray[i]) {
+                    depart_id = (i + 1);
+                }
+            }
             if (roleName && salary && roleD) {
-                mySQLaddRole(department, role, employee, departArray, roleName, salary, roleD);
+                mySQLaddRole(department, role, employee, departArray, roleName, salary, roleD, depart_id);
             }
         }
     );
 
 }
 
-var mySQLaddRole = (department, role, employee, roleName, salary, roleD) => {
+var mySQLaddRole = (department, role, employee, departArray, roleName, salary, roleD, depart_id) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = 'USE company;';
@@ -411,28 +421,26 @@ var mySQLaddRole = (department, role, employee, roleName, salary, roleD) => {
                 return reject(err);
             }
             resolve(rows);
-            addRoleSecCommand(department, role, employee, roleName, salary, roleD);
+            addRoleSecCommand(department, role, employee, departArray, roleName, salary, roleD, depart_id);
         });
     });    
 }
 
-var addRoleSecCommand = (department, role, employee, roleName, salary, roleD) => {
+var addRoleSecCommand = (department, role, employee, departArray, roleName, salary, roleD, depart_id) => {
     return new Promise(function(resolve, reject) {
-
         var query_str = 'INSERT INTO role (title, salary)' + `VALUES ('${roleName}', '${salary}');`;
-        // var query_str = `DELETE FROM department WHERE name='undefined';`
 
         connection.query(query_str, function (err, rows, fields) {
             if (err) {
                 return reject(err);
             }
             resolve(rows);
-            addRoleThird(department, role, employee, roleName, salary, roleD);
+            addRoleThird(department, role, employee, departArray, roleName, salary, roleD, depart_id);
         });
     });
 }
 
-var addRoleThird = (department, role, employee, roleName, salary, roleD) => {
+var addRoleThird = (department, role, employee, departArray, roleName, salary, roleD, depart_id) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = `SELECT * FROM role;`;
@@ -442,12 +450,14 @@ var addRoleThird = (department, role, employee, roleName, salary, roleD) => {
                 return reject(err);
             }
             resolve(rows);
-            let depart = {
-                id: rows[(department.length)].id,
-                name: rows[(department.length)].name
+            var position = {
+                title: roleName,
+                salary: salary,
+                department_id: depart_id
             }
-            department.push(depart);
-            confirmContinue(department, role, employee);
+            console.log(position);
+            // role.push(position);
+            confirmContinue(department, role, employee, departArray);
         });
     });
 }
