@@ -268,7 +268,7 @@ var optionsList = (department, role, employee, departArray, roleArray, employeeA
             }
 
             if (choice === 'Update Employee Role') {
-                updateRole(department, role, employee);
+                updateRole(department, role, employee, departArray, roleArray, employeeArray);
             }
         }
     )
@@ -615,29 +615,98 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
 //
 // update a role in the mySQL database
 
-var updateRole = (department, role, employee) => {
+var updateRole = (department, role, employee, departArray, roleArray, employeeArray) => {
 
     inquirer.prompt([
         {
             type: 'list',
             name: 'updateEmployee',
             message: 'Which employees role would you like to update?',
-            choices: ['[array]']
+            choices: employeeArray
         },
         {
             type: 'list',
             name: 'updateRole',
             message: 'Which role would you like to assign the employee?',
-            choices: ['[array]']
+            choices: roleArray
         }
     ]).then(
         answer => {
-            if (answer.updateEmployee && answer.updateRole) {
+            var upEmploy = answer.updateEmployee;
+            var upRole = answer.updateRole;
+
+            // set up department id to ensue it corresponds to the specific department selected
+            var depart_id = [];
+            for (var i = 0; i < roleArray.length; i++) {
+
+                if (upRole === roleArray[i]) {
+                    depart_id = (i + 1);
+                }
+            }
+
+            if (upEmploy && upRole) {
              
             }
         }
     );
 }
+
+
+var mySQLupdateRole = (department, role, employee, departArray, roleArray, employeeArray, upEmploy, upRole, depart_id) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'USE company;';
+
+        connection.query(query_str, function (err, rowsU, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rowsU);
+            updateSecCommand(department, role, employee, departArray, roleArray, employeeArray, upEmploy, upRole, depart_id);
+        });
+    });    
+}
+
+var updateSecCommand = (department, role, employee, departArray, roleArray, employeeArray, upEmploy, upRole, depart_id) => {
+    return new Promise(function(resolve, reject) {
+        var query_str = 'UPDATE role' + `SET title = '${upRole}'` + `WHERE department_id = ${depart_id};`;
+
+        connection.query(query_str, function (err, rowsU, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rowsU);
+            updateThird(department, role, employee, departArray, roleArray, employeeArray, upEmploy, upRole, depart_id);
+        });
+    });
+}
+
+var updateThird = (department, role, employee, departArray, roleArray, employeeArray, upEmploy, upRole, depart_id) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = `SELECT * FROM employee;`;
+
+        connection.query(query_str, function (err, rowsU, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rowsU);
+
+            // set up object to contain ... name from mySQL database
+
+            // push values to ... (table addtion)
+
+            // set parameter to contain ...
+                     
+            // push value to ... (inquirer prompt)
+    
+            confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
+        });
+    });
+}
+
+//
+// confirm wheter or not user want to continue the questionnaire 
 
 var confirmContinue = (department, role, employee, departArray, roleArray, employeeArray) => {
     inquirer.prompt([
