@@ -1,13 +1,11 @@
 const inquirer = require('inquirer')
-// const prompt = require('./language-link');
-const mysql = require('mysql2');
 var connection = require('./localhost/connection');
 
-// 
+// //  
 
-// // seed 
+// // LARGE CODE CHUNK (1st): Establish tables for seed values
 
-//
+// // 
 
 var tableSeeds = () => {
     return new Promise(function(resolve, reject) {
@@ -198,51 +196,40 @@ var displayAllThree = (rows, rowsR, rowsE) => {
 
 
 
-//
 
-// // main
+// //  
 
-//
+// // LARGE CODE CHUNK (2nd): Prompt the business owner to view tables, add info, or update info
 
-
-
-var confirmContinue = (department, role, employee, departArray, roleArray, employeeArray) => {
-    inquirer.prompt([
-        {
-            type: 'confirm',
-            name: 'continue',
-            message: 'Would you like to continue?',
-        }
-    ]).then(
-        answer => {
-            if (answer.continue === true) {
-                optionsList(department, role, employee, departArray, roleArray, employeeArray);
-            }
-        }
-    );
-}
+// // 
 
 var optionsList = (department, role, employee, departArray, roleArray, employeeArray) => {
 
+    // allow values to be pushed into the following arrays
+    
+    // Set 1: Table arrays
     if (!department) {
-       department = [];
+       department = []; // holds the names of the department within the business
     }
     if (!role) {
-        role = [];
+        role = [];      // holds the job titles and associated salaries within the business
     }
     if (!employee) {
-        employee = [];
-    }
+        employee = [];  // holds the first and last names of the employees, as well as the employee ID of the manager               //
+    }                   // if employee has no manager, then value will be displayed as null
+
+    // Set 2: Inquirer choice arrays
     if (!departArray) {
-        departArray = [];
+        departArray = [];  // stores choices for 'What department does the role belong to?'
     }
     if (!roleArray) {
-        roleArray = [];
+        roleArray = [];    // stores choices for 'What is the role of the employee?'
     }
     if (!employeeArray) {
-        employeeArray = [];
+        employeeArray = []; // stores choices for 'What is the role of the employee?'
     }
 
+    // prompt manager for input
     inquirer.prompt([
         {
             type: 'list',
@@ -287,24 +274,25 @@ var optionsList = (department, role, employee, departArray, roleArray, employeeA
     )
 }
 
-// display all departments in the mySQL database
+// display all departments from the mySQL database
 var displayDepartments = (department, role, employee, departArray, roleArray, employeeArray) => {
     console.table(department);
     confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
 }
 
-// display all roles in the mySQL database
+// display all roles from the mySQL database
 var displayRoles = (department, role, employee, departArray, roleArray, employeeArray) => {
     console.table(role);
     confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
 }
 
-// display all employees in the mySQL database
+// display all employees from the mySQL database
 var displayEmployees = (department, role, employee, departArray, roleArray, employeeArray) => {
     console.table(employee);
     confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
 }
 
+//
 // add a department to the mySQL database
 
 var addDepartment = (department, role, employee, departArray, roleArray, employeeArray) => {
@@ -366,25 +354,27 @@ var addDepartmentThird = (department, role, employee, departArray, roleArray, em
                 return reject(err);
             }
             resolve(rowsP);
+
+            // set object to contain department id and name for mySQL database
             var depart = {
                 id: rowsP[(rowsP.length - 1)].id,
                 name: rowsP[(rowsP.length - 1)].name
             }
+            // push to department (add to table)
+            department.push(depart); 
+
+            // set parameter to contain  employee name
             var departA = rowsP[(rowsP.length - 1)].name;
-            department.push(depart);
-            departArray.push(departA);
             
-            console.log(rowsP);
-            console.log(depart);
-            console.log(departA);
-            console.log(department);
-            console.log(departArray);
+            // push to departArray (add to array for inquirer choices)
+            departArray.push(departA);
 
             confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
         });
     });
 }
 
+//
 // add a role to the mySQL database
 
 var addRole = (department, role, employee, departArray, roleArray, employeeArray) => {
@@ -411,13 +401,17 @@ var addRole = (department, role, employee, departArray, roleArray, employeeArray
             var roleName = answer.roleName;
             var salary = answer.roleSalary;
             var roleD = answer.roleDepartment;
+
+            // set up department id to ensue it corresponds to the specific department selected
             var depart_id = [];
             for (var i = 0; i < departArray.length; i++) {
-                depart_id[i] = (i + 1);
+                
                 if (roleD === departArray[i]) {
                     depart_id = (i + 1);
                 }
+            
             }
+
             if (roleName && salary && roleD) {
                 mySQLaddRole(department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD, depart_id);
             }
@@ -465,21 +459,28 @@ var addRoleThird = (department, role, employee, departArray, roleArray, employee
                 return reject(err);
             }
             resolve(rowsO);
+
+            // set object to contanin values from mySQL database
             var position = {
                 title: rowsO[rowsO.length - 1].title,
                 salary: rowsO[rowsO.length - 1].salary,
                 department_id: depart_id
             }
-      
-            var positionRole = roleName;
+            // push values to role (table addition)
             role.push(position);
+      
+            // set parameter to store job title
+            var positionRole = roleName;
+           
+            // push value to roleArray (addition for inquirer choices)
             roleArray.push(positionRole);
+
             confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
         });
     });
 }
 
-
+//
 // add an employee to the mySQL database
 
 var addEmployee = (department, role, employee, departArray, roleArray, employeeArray) => {
@@ -512,24 +513,31 @@ var addEmployee = (department, role, employee, departArray, roleArray, employeeA
             var first = answer.first;
             var last = answer.last;
             var employeeR = answer.roleEmploy;
+            var leader = answer.managerEmploy;
+
+            // set up department id to ensue it corresponds to the specific department selected
             var depart_id = [];
             for (var i = 0; i < roleArray.length; i++) {
-                depart_id[i] = (i + 1);
+
                 if (employeeR === roleArray[i]) {
                     depart_id = (i + 1);
                 }
             }
-            var leader = answer.managerEmploy;
+
+            // set up manager id to ensue it corresponds to the specific employee selected
             var leader_id = [];
             for (var i = 1; i < employeeArray.length; i++) {
-                leader_id[i] = (i + 2);
+
                 if (leader === employeeArray[i]) {
                     leader_id = (i);
                 }
             }
+
+            // If user indicates that employee has no mananger, then set the manager ID to null
             if (leader === employeeArray[0]) {
                 leader_id = 'NULL';
             }
+
             if (first && last && employeeR && leader) {
                 mySQLaddEmployee(department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, depart_id, leader, leader_id);
             }
@@ -576,23 +584,35 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
                 return reject(err);
             }
             resolve(rowsM);
+
+            // set convert 'NULL' to value to match aesthetics displayed in terminal 
             if (leader_id === 'NULL') {
                 leader_id = null;
             }
+
+            // set up object to contain employess name from mySQL database
             var job = {
                 first_name: rowsM[rowsM.length - 1].first_name,
                 last_name: rowsM[rowsM.length - 1].last_name,
                 role_id: depart_id,
                 manager_id: leader_id
             }
-            var lastName = rowsM[rowsM.length - 1].last_name;
+
+            // push values to employee (table addtion)
             employee.push(job);
+
+            // set parameter to contain employee's last name
+            var lastName = rowsM[rowsM.length - 1].last_name;
+           
+            // push value to employeeArray (inquirer prompt)
             employeeArray.push(lastName);
+
             confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
         });
     });
 }
 
+//
 // update a role in the mySQL database
 
 var updateRole = (department, role, employee) => {
@@ -619,3 +639,18 @@ var updateRole = (department, role, employee) => {
     );
 }
 
+var confirmContinue = (department, role, employee, departArray, roleArray, employeeArray) => {
+    inquirer.prompt([
+        {
+            type: 'confirm',
+            name: 'continue',
+            message: 'Would you like to continue?',
+        }
+    ]).then(
+        answer => {
+            if (answer.continue === true) {
+                optionsList(department, role, employee, departArray, roleArray, employeeArray);
+            }
+        }
+    );
+}
