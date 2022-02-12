@@ -502,12 +502,79 @@ var addEmployee = (department, role, employee, roleArray, employeeArray) => {
         }
     ]).then(
         answer => {
-            if (answer.first && answer.last && answer.roleEmploy && answer.managerEmploy) {
+            var first = answer.first;
+            var last = answer.last;
+            var employeeR = answer.roleEmploy;
+            var leader = answer.managerEmploy;
+            var leader_id = [];
+            for (var i = 1; i < employeeArray.length; i++) {
+                leader_id[i] = (i + 2);
+                if (leader === employeeArray[i]) {
+                    leader_id = (i);
+                }
+            }
+            if (leader === employeeArray[0]) {
+                leader_id = 'NULL';
+            }
+            console.log(leader);
+            console.log(leader_id);
+            if (first && last && employeeR && leader) {
 
             }
         }
     );
+}
 
+var mySQLaddEmployee = (department, role, employee, roleArray, employeeArray) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'USE company;';
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            addEmployeeSecCommand(department, role, employee, roleArray, employeeArray);
+        });
+    });    
+}
+
+var addEmployeeSecCommand = (department, role, employee, roleArray, employeeArray) => {
+    return new Promise(function(resolve, reject) {
+        var query_str = 'INSERT INTO employee (first_name, last_name)' + `VALUES ('${roleName}', '${salary}');`;
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            addEmployeeThird(department, role, employee, roleArray, employeeArray);
+        });
+    });
+}
+
+var addEmployeeThird = (department, role, employee, roleArray, employeeArray) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = `SELECT * FROM role;`;
+
+        connection.query(query_str, function (err, rows, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+            // var position = {
+            //     title: roleName,
+            //     salary: salary,
+            //     department_id: depart_id
+            // }
+            // var positionRole = roleName;
+            // role.push(position);
+            // roleArray.push(positionRole);
+            confirmContinue(department, role, employee, roleArray, employeeArray);
+        });
+    });
 }
 
 // update a role in the mySQL database
