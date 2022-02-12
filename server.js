@@ -128,63 +128,87 @@ var displayAllThree = (rows, rowsR, rowsE) => {
     var role = [
         {
             title: rowsR[0].title,
-            salary: rowsR[0].salary,
-            department_id: rowsR[0].department_id
+            role_id: rowsE[0].role_id,
+            department: rows[0].name,
+            salary: rowsR[0].salary,  
         },
         {
             title: rowsR[1].title,
-            salary: rowsR[1].salary,
-            department_id: rowsR[1].department_id
+            role_id: rowsE[1].role_id,
+            department: rows[1].name,
+            salary: rowsR[1].salary,  
         },
         {
             title: rowsR[2].title,
-            salary: rowsR[2].salary,
-            department_id: rowsR[2].department_id
+            role_id: rowsE[2].role_id,
+            department: rows[2].name,
+            salary: rowsR[2].salary,  
         },
         {
             title: rowsR[3].title,
-            salary: rowsR[3].salary,
-            department_id: rowsR[3].department_id
+            role_id: rowsE[3].role_id,
+            department: rows[3].name,
+            salary: rowsR[3].salary,  
         },
         {
             title: rowsR[4].title,
-            salary: rowsR[4].salary,
-            department_id: rowsR[4].department_id
+            role_id: rowsE[4].role_id,
+            department: rows[4].name,
+            salary: rowsR[4].salary,  
         },
     ];
 
-    var employee = [
+    var employee = [];
+
+    employee = [
         {
+            employee_id: rowsE[0].id,
             first_name: rowsE[0].first_name,
             last_name: rowsE[0].last_name,
-            role_id: rowsE[0].role_id,
-            manager_id: rowsE[0].manager_id
+            title: rowsR[0].title, 
+            department: rows[0].name,
+            salary: rowsR[0].salary,
+            manager: null 
         },
         {
+            employee_id: rowsE[1].id,
             first_name: rowsE[1].first_name,
             last_name: rowsE[1].last_name,
-            role_id: rowsE[1].role_id,
-            manager_id: rowsE[1].manager_id
+            title: rowsR[1].title, 
+            department: rows[1].name,
+            salary: rowsR[1].salary,
+            manager: null 
         },
         {
+            employee_id: rowsE[2].id,
             first_name: rowsE[2].first_name,
             last_name: rowsE[2].last_name,
-            role_id: rowsE[2].role_id,
-            manager_id: rowsE[2].manager_id
+            title: rowsR[2].title, 
+            department: rows[2].name,
+            salary: rowsR[2].salary,
+            manager: null 
         },
         {
+            employee_id: rowsE[3].id,
             first_name: rowsE[3].first_name,
             last_name: rowsE[3].last_name,
-            role_id: rowsE[3].role_id,
-            manager_id: rowsE[3].manager_id
-        },
+            title: rowsR[3].title, 
+            department: rows[3].name,
+            salary: rowsR[3].salary,
+            manager: null 
+        }, 
         {
+            employee_id: rowsE[4].id,
             first_name: rowsE[4].first_name,
             last_name: rowsE[4].last_name,
-            role_id: rowsE[4].role_id,
-            manager_id: rowsE[4].manager_id
-        },
+            title: rowsR[4].title, 
+            department: rows[4].name,
+            salary: rowsR[4].salary,
+            manager: null 
+        }
     ];
+
+    console.log(employee);
 
     var departArray = [rows[0].name, rows[1].name, rows[2].name, rows[3].name, rows[4].name]
     var roleArray = [rowsR[0].title, rowsR[1].title, rowsR[2].title, rowsR[3].title, rowsR[4].title];
