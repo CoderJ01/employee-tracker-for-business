@@ -208,8 +208,6 @@ var displayAllThree = (rows, rowsR, rowsE) => {
         }
     ];
 
-    console.log(employee);
-
     var departArray = [rows[0].name, rows[1].name, rows[2].name, rows[3].name, rows[4].name]
     var roleArray = [rowsR[0].title, rowsR[1].title, rowsR[2].title, rowsR[3].title, rowsR[4].title];
     var employeeArray = ['None', rowsE[0].last_name, rowsE[1].last_name, rowsE[2].last_name, rowsE[3].last_name,
@@ -426,25 +424,15 @@ var addRole = (department, role, employee, departArray, roleArray, employeeArray
             var salary = answer.roleSalary;
             var roleD = answer.roleDepartment;
 
-            // set up department id to ensue it corresponds to the specific department selected
-            var depart_id = [];
-            for (var i = 0; i < departArray.length; i++) {
-                
-                if (roleD === departArray[i]) {
-                    depart_id = (i + 1);
-                }
-            
-            }
-
             if (roleName && salary && roleD) {
-                mySQLaddRole(department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD, depart_id);
+                mySQLaddRole(department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD);
             }
         }
     );
 
 }
 
-var mySQLaddRole = (department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD, depart_id) => {
+var mySQLaddRole = (department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = 'USE company;';
@@ -454,12 +442,12 @@ var mySQLaddRole = (department, role, employee, departArray, roleArray, employee
                 return reject(err);
             }
             resolve(rowsO);
-            addRoleSecCommand(department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD, depart_id);
+            addRoleSecCommand(department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD);
         });
     });    
 }
 
-var addRoleSecCommand = (department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD, depart_id) => {
+var addRoleSecCommand = (department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD) => {
     return new Promise(function(resolve, reject) {
         var query_str = 'INSERT INTO role (title, salary)' + `VALUES ('${roleName}', '${salary}');`;
 
@@ -468,12 +456,12 @@ var addRoleSecCommand = (department, role, employee, departArray, roleArray, emp
                 return reject(err);
             }
             resolve(rowsO);
-            addRoleThird(department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD, depart_id);
+            addRoleThird(department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD);
         });
     });
 }
 
-var addRoleThird = (department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD, depart_id) => {
+var addRoleThird = (department, role, employee, departArray, roleArray, employeeArray, roleName, salary, roleD) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = `SELECT * FROM role;`;
@@ -487,9 +475,11 @@ var addRoleThird = (department, role, employee, departArray, roleArray, employee
             // set object to contanin values from mySQL database
             var position = {
                 title: rowsO[rowsO.length - 1].title,
+                role_id: rowsO[rowsO.length - 1].id,
+                department: roleD,
                 salary: rowsO[rowsO.length - 1].salary,
-                department_id: depart_id
             }
+
             // push values to role (table addition)
             role.push(position);
       
@@ -548,28 +538,14 @@ var addEmployee = (department, role, employee, departArray, roleArray, employeeA
                 }
             }
 
-            // set up manager id to ensue it corresponds to the specific employee selected
-            var leader_id = [];
-            for (var i = 1; i < employeeArray.length; i++) {
-
-                if (leader === employeeArray[i]) {
-                    leader_id = (i);
-                }
-            }
-
-            // If user indicates that employee has no mananger, then set the manager ID to null
-            if (leader === employeeArray[0]) {
-                leader_id = 'NULL';
-            }
-
             if (first && last && employeeR && leader) {
-                mySQLaddEmployee(department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, depart_id, leader, leader_id);
+                mySQLaddEmployee(department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, leader, depart_id);
             }
         }
     );
 }
 
-var mySQLaddEmployee = (department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, depart_id, leader, leader_id) => {
+var mySQLaddEmployee = (department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, leader, depart_id) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = 'USE company;';
@@ -579,12 +555,12 @@ var mySQLaddEmployee = (department, role, employee, departArray, roleArray, empl
                 return reject(err);
             }
             resolve(rowsM);
-            addEmployeeSecCommand(department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, depart_id, leader, leader_id);
+            addEmployeeSecCommand(department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, leader, depart_id);
         });
     });    
 }
 
-var addEmployeeSecCommand = (department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, depart_id, leader, leader_id) => {
+var addEmployeeSecCommand = (department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, leader, depart_id) => {
     return new Promise(function(resolve, reject) {
         var query_str = 'INSERT INTO employee (first_name, last_name)' + `VALUES ('${first}', '${last}');`;
 
@@ -593,12 +569,12 @@ var addEmployeeSecCommand = (department, role, employee, departArray, roleArray,
                 return reject(err);
             }
             resolve(rowsM);
-            addEmployeeThird(department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, depart_id, leader, leader_id, rowsM);
+            addEmployeeThird(department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, leader, depart_id, rowsM);
         });
     });
 }
 
-var addEmployeeThird = (department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, depart_id, leader, leader_id, rowsM) => {
+var addEmployeeThird = (department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, leader, depart_id, rowsM) => {
     return new Promise(function(resolve, reject) {
 
         var query_str = `SELECT * FROM employee;`;
@@ -609,17 +585,36 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
             }
             resolve(rowsM);
 
-            // set convert 'NULL' to value to match aesthetics displayed in terminal 
-            if (leader_id === 'NULL') {
-                leader_id = null;
+            // create new parameter with a more appropiate name
+            var role_id = depart_id;
+
+            // retrive department based on job ID
+            // NOTE: code is feasible provided that someone switches jobs within the SAME department
+            var retrieveDepart;
+            for (var i = 0; i < departArray.length; i++) {
+                if (role_id === i) {
+                    retrieveDepart = departArray[i - 1];
+                }
+            }
+
+            // link salary to job title
+            var money;
+            for (var i = 0; i < roleArray.length; i++) {
+
+                if (employeeR === employee[i].title) {
+                    money = employee[i].salary;
+                }
             }
 
             // set up object to contain employess name from mySQL database
             var job = {
+                employee_id: rowsM[rowsM.length - 1].id,
                 first_name: rowsM[rowsM.length - 1].first_name,
                 last_name: rowsM[rowsM.length - 1].last_name,
-                role_id: depart_id,
-                manager_id: leader_id
+                title: employeeR,
+                department: retrieveDepart,
+                salary: money,
+                manager: leader
             }
 
             // push values to employee (table addtion)
@@ -669,7 +664,7 @@ var updateRole = (department, role, employee, departArray, roleArray, employeeAr
             }
 
             if (upEmploy && upRole) {
-             
+                mySQLupdateRole (department, role, employee, departArray, roleArray, employeeArray, upEmploy, upRole, depart_id)
             }
         }
     );
@@ -693,7 +688,7 @@ var mySQLupdateRole = (department, role, employee, departArray, roleArray, emplo
 
 var updateSecCommand = (department, role, employee, departArray, roleArray, employeeArray, upEmploy, upRole, depart_id) => {
     return new Promise(function(resolve, reject) {
-        var query_str = 'UPDATE role' + `SET title = '${upRole}'` + `WHERE department_id = ${depart_id};`;
+        var query_str = 'UPDATE role ' + `SET title = '${upRole}' ` + `WHERE department_id = ${depart_id};`;
 
         connection.query(query_str, function (err, rowsU, fields) {
             if (err) {
@@ -716,13 +711,14 @@ var updateThird = (department, role, employee, departArray, roleArray, employeeA
             }
             resolve(rowsU);
 
-            // set up object to contain ... name from mySQL database
+            // replace job title in table
+            // use loop, since console.log(rowsU) does not display job title 
+            for (var i = 0; i < employee.length; i++) {
 
-            // push values to ... (table addtion)
-
-            // set parameter to contain ...
-                     
-            // push value to ... (inquirer prompt)
+                if (upEmploy === employee[i].last_name) {
+                    employee[i].title = upRole;
+                }
+            }
     
             confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
         });
