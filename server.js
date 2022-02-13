@@ -595,7 +595,7 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
             var retrieveDepart;
             for (var i = 0; i < departArray.length; i++) {
                 if (role_id === i) {
-                    retrieveDepart = departArray[i];
+                    retrieveDepart = department[i].name;
                 }
             }
 

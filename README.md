@@ -9,5 +9,12 @@ This business employee tracker is designed to allow business owners to view and 
     * Express.js
  * SQL
 
+## Packages Required
+ * npm install
+ * npm install inquirer
+ * npm install console.table
+ * npm install --save mysql2
+    * (mysql password also needed)
+
 ## Contribution
 Made by CoderJ01
