@@ -23,7 +23,7 @@ VALUES
     ('Mona', 'Lisa', '2'),
     ('Pablo', 'Picasso', '3'),
     ('Niccolo', 'Machiavelli', '4'),
-      ('Alexandria', 'Victoria', '5');
+    ('Alexandria', 'Victoria', '5');
 
 
 

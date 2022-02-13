@@ -1,5 +1,6 @@
 const inquirer = require('inquirer')
 var connection = require('./localhost/connection');
+const fs = require('fs');
 
 // //  
 
@@ -735,11 +736,17 @@ var confirmContinue = (department, role, employee, departArray, roleArray, emplo
             name: 'continue',
             message: 'Would you like to continue?',
         }
-    ]).then(
+    ])
+    .then(
         answer => {
             if (answer.continue === true) {
                 optionsList(department, role, employee, departArray, roleArray, employeeArray);
             }
+            else {
+                console.log('Have a nice day!');
+            }
         }
     );
 }
+        
+    
