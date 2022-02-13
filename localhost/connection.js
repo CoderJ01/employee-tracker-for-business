@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 const containPassword = require('../localhost/password.js');
 
 const code = containPassword();
-// const code = '';
+//const code = '';
 
 const db = mysql.createConnection({
     host: 'localhost',

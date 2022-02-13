@@ -601,8 +601,8 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
             var money;
             for (var i = 0; i < roleArray.length; i++) {
 
-                if (employeeR === employee[i].title) {
-                    money = employee[i].salary;
+                if (employeeR === role[i].title) {
+                    money = role[i].salary;
                 }
             }
 
