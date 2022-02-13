@@ -257,8 +257,8 @@ var optionsList = (department, role, employee, departArray, roleArray, employeeA
             type: 'list',
             name: 'tableChoice',
             message: 'What would you like to do?',
-            choices: ['View All Departments','View All Roles','View All Employees','Add Department',
-            'Add Role','Add Employee','Update Employee Role']
+            choices: ['View All Departments', 'Add Department','View All Roles', 'Add Role', 'View All Employees', 
+                      'Add Employee','Update Employee Role']
         }
     ])
     .then(
