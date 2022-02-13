@@ -1,6 +1,5 @@
 const inquirer = require('inquirer')
 var connection = require('./localhost/connection');
-const fs = require('fs');
 
 // //  
 
