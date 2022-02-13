@@ -212,6 +212,7 @@ var displayAllThree = (rows, rowsR, rowsE) => {
     var roleArray = [rowsR[0].title, rowsR[1].title, rowsR[2].title, rowsR[3].title, rowsR[4].title];
     var employeeArray = ['None', rowsE[0].last_name, rowsE[1].last_name, rowsE[2].last_name, rowsE[3].last_name,
                          rowsE[4].last_name];
+
     optionsList(department, role, employee, departArray, roleArray, employeeArray);
 }
 
@@ -584,6 +585,7 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
                 return reject(err);
             }
             resolve(rowsM);
+            console.table(rowsM);
 
             // create new parameter with a more appropiate name
             var role_id = depart_id;
@@ -593,7 +595,7 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
             var retrieveDepart;
             for (var i = 0; i < departArray.length; i++) {
                 if (role_id === i) {
-                    retrieveDepart = departArray[i - 1];
+                    retrieveDepart = departArray[i];
                 }
             }
 
@@ -604,6 +606,10 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
                 if (employeeR === role[i].title) {
                     money = role[i].salary;
                 }
+            }
+
+            if (leader === 'None') {
+                leader = null;
             }
 
             // set up object to contain employess name from mySQL database
@@ -703,13 +709,14 @@ var updateSecCommand = (department, role, employee, departArray, roleArray, empl
 var updateThird = (department, role, employee, departArray, roleArray, employeeArray, upEmploy, upRole, depart_id) => {
     return new Promise(function(resolve, reject) {
 
-        var query_str = `SELECT * FROM employee;`;
+        var query_str = `SELECT * FROM role;`;
 
         connection.query(query_str, function (err, rowsU, fields) {
             if (err) {
                 return reject(err);
             }
             resolve(rowsU);
+            console.log(rowsU);
 
             // replace job title in table
             // use loop, since console.log(rowsU) does not display job title 
