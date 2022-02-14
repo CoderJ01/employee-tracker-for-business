@@ -585,7 +585,22 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
                 return reject(err);
             }
             resolve(rowsM);
-            console.table(rowsM);
+
+            addEmployeeFourth(department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, leader, depart_id, rowsM);
+        });
+    });
+}
+
+var addEmployeeFourth = (department, role, employee, departArray, roleArray, employeeArray, first, last, employeeR, leader, depart_id, rowsM) => {
+    return new Promise(function(resolve, reject) {
+
+        var query_str = 'SELECT * FROM department';
+
+        connection.query(query_str, function (err, rowsRs, fields) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rowsRs);
 
             // create new parameter with a more appropiate name
             var role_id = depart_id;
@@ -618,7 +633,7 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
                 first_name: rowsM[rowsM.length - 1].first_name,
                 last_name: rowsM[rowsM.length - 1].last_name,
                 title: employeeR,
-                department: retrieveDepart,
+                department: rowsRs[rowsRs.length - 1].name,
                 salary: money,
                 manager: leader
             }
@@ -631,7 +646,7 @@ var addEmployeeThird = (department, role, employee, departArray, roleArray, empl
            
             // push value to employeeArray (inquirer prompt)
             employeeArray.push(lastName);
-
+            
             confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
         });
     });
