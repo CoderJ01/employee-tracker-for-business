@@ -731,8 +731,6 @@ var updateThird = (department, role, employee, departArray, roleArray, employeeA
                 return reject(err);
             }
             resolve(rowsU);
-            console.log(rowsU);
-
             // replace job title in table
             // use loop, since console.log(rowsU) does not display job title 
             for (var i = 0; i < employee.length; i++) {
@@ -741,14 +739,11 @@ var updateThird = (department, role, employee, departArray, roleArray, employeeA
                     employee[i].title = upRole;
                 }
             }
-    
+
             confirmContinue(department, role, employee, departArray, roleArray, employeeArray);
         });
     });
 }
-
-//
-// confirm wheter or not user want to continue the questionnaire 
 
 var confirmContinue = (department, role, employee, departArray, roleArray, employeeArray) => {
     inquirer.prompt([
