@@ -17,7 +17,7 @@ This business employee tracker is designed to allow business owners to view and 
     * (mysql password also needed)
 
 ## Walkthrough
-[Video](https://github.com/CoderJ01/employee-tracker-for-business/tree/main/assets/videos)
+[Video](https://youtu.be/uhKw0vyEl7w)
 
 ## Contribution
 Made by CoderJ01
